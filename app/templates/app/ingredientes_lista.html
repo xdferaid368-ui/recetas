@@ -1,0 +1,12 @@
+<h1>Lista de Ingredientes</h1>
+
+<form method="get">
+    <input type="text" name="filtrar" placeholder="Buscar ingrediente" value="{{ filtrar }}">
+    <button type="submit">Filtrar</button>
+</form>
+
+<ul>
+  {% for ingrediente in ingredientes %}
+    <li>{{ ingrediente.nombre }} - Categoria: {{ ingrediente.categoria.nombre }}</li>
+  {% endfor %}
+</ul>
