@@ -1,12 +1,69 @@
+{% extends 'app/base.html' %}
+
+{% block titulo %}Lista de Ingredientes{% endblock %}
+
+{% block contenido %}
 <h1>Lista de Ingredientes</h1>
 
 <form method="get">
-    <input type="text" name="filtrar" placeholder="Buscar ingrediente" value="{{ filtrar }}">
-    <button type="submit">Filtrar</button>
-</form>
+  <label for="categoria">Categoría:</label>
+  <select name="categoria" id="categoria">
+    <option value "">---</option>
+    {% for categoria in categorias %}
+      <option value="{{ categoria.id }}"    <option value='categoria.pk'
+      {%if request.GET.categoria == categoria.pk|stringformat:'s'%} selected {% endif %}>
+      {{categoria.nombre}}</option>>
+        {{ categoria.nombre }}
+      </option>
+    {% endfor %}
+  </select>
 
-<ul>
-  {% for ingrediente in ingredientes %}
-    <li>{{ ingrediente.nombre }} - Categoria: {{ ingrediente.categoria.nombre }}</li>
-  {% endfor %}
-</ul>
+  <label for="refrigerado">Es refrigerado?:</label>
+  <input type="checkbox" name="refrigerado" id="refrigerado" {%if refrigerado_filtro%}checked{% endif %}>
+  
+
+  <input type="submit" value="Filtrar">
+</form>
+<form method = 'get'>
+  <h2>Nuevo Filtro</h2>
+  {{formulario_filtro}}
+  <input type='submit' value='Filtrar'>
+</form>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Refrigerado</th>
+            <th>Fecha caducidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ingrediente in ingredientes %}
+        <tr>
+            <td>{{ ingrediente.nombre }}</td>
+            <td>
+                {% if ingrediente.categoria %}
+                    {{ ingrediente.categoria.nombre }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>{% if ingrediente.refrigerado %}Sí{% else %}No{% endif %}</td>
+            <td>{{ ingrediente.fecha_caducidad|default:'-' }}</td>
+            <td>
+<td>
+    <a href="{% url 'confirmar_eliminar' ingrediente.pk %}" class="btn">Eliminar</a>
+</td>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No hay ingredientes</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'ingrediente_nuevo' %}" class="btn">Nuevo ingrediente</a>
+{% endblock %}

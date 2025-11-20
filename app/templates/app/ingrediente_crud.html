@@ -1,0 +1,51 @@
+{% extends 'app/base.html' %}
+
+{% block titulo %}{{ estado|capfirst }} Ingrediente{% endblock %}
+
+{% block contenido %}
+<h2>{{ estado|capfirst }} Ingrediente</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.errors %}
+        <ul>
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p>
+        <label for="id_nombre">Nombre:</label>
+        <input type="text" name="nombre" id="id_nombre" value="{{ form.nombre.value|default_if_none:'' }}" required>
+    </p>
+
+    <p>
+        <label for="id_categoria">Categoría:</label>
+        <select name="categoria" id="id_categoria">
+            <option value="">---</option>
+            {% for categoria in categorias %}
+                <option value="{{ categoria.id }}"
+                    {% if form.categoria.value == categoria.id|stringformat:'s' %} selected {% endif %}>
+                    {{ categoria.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <p>
+        <label for="id_fecha_caducidad">Fecha de caducidad:</label>
+        <input type="date" name="fecha_caducidad" id="id_fecha_caducidad"
+            value="{{ form.fecha_caducidad.value|default_if_none:'' }}">
+    </p>
+
+    <button type="submit">Guardar</button>
+    <a href="{% url 'ingredientes' %}">Cancelar</a>
+</form>
+{% endblock %}

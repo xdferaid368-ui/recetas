@@ -1,0 +1,11 @@
+{% extends 'app/base.html' %}
+{%block titulo%}
+<h2>¿Estás seguro de que quieres eliminar a {{ ingrediente.nombre }}?</h2>
+{%endblock%}
+{%block contenido%}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+    <a href="{% url 'ingredientes' %}">Cancelar</a>
+</form>
+{%endblock%}
