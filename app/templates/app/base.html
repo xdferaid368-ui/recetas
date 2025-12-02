@@ -1,11 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block titulo %}Mi sitio{% endblock %}</title>
+    <title>{% block title %}Mi App de Recetas{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 <body>
-    {% block contenido %}{% endblock %}
+    <div class="container">
+        {% block contenido %}{% endblock %}
+    </div>
 </body>
 </html>

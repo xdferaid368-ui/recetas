@@ -1,63 +1,53 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Ingrediente, CategoriaIngrediente
-from .forms import *
-# Create your views here.
+from .models import *
+from .forms import FiltroIngredientesForm, IngredienteModelForm, IngredienteForm
+from django.forms import formset_factory
+
 def inicio(request):
-    pass
+    return render(request, 'app/inicio.html')
 
 
 def ingredientes_lista(request):
     categorias = CategoriaIngrediente.objects.all()
-    categoria_seleccionada = request.GET.get('categoria')
-    refrigerado_filtro = request.GET.get('refrigerado')
-
     ingredientes = Ingrediente.objects.all()
 
-    if categoria_seleccionada:
-        ingredientes = ingredientes.filter(categoria_id=categoria_seleccionada)
+    categoria = request.GET.get('categoria')
+    refrigerado = request.GET.get('refrigerado')
 
-    if refrigerado_filtro:
+    if categoria:
+        ingredientes = ingredientes.filter(categoria_id=categoria)
+
+    if refrigerado:
         ingredientes = ingredientes.filter(refrigerado=True)
 
-    formulario_filtro = FiltroIngredientesForm()
-    
     return render(request, 'app/ingredientes_lista.html', {
         'ingredientes': ingredientes,
         'categorias': categorias,
-        'refrigerado_filtro': refrigerado_filtro,
-        'formulario_filtro': formulario_filtro,
+        'refrigerado_filtro': refrigerado,
+        'formulario_filtro': FiltroIngredientesForm(),
     })
-def ingrediente_eliminar(request, pk):
-    ingrediente = get_object_or_404(Ingrediente, pk=pk)
-    if request.method == 'POST':
-        ingrediente.delete()
-        return redirect('ingredientes')
-    return render(request, 'app/confirmar_eliminar.html', {'ingrediente': ingrediente})
 def ingrediente_nuevo(request):
-    print(request)
-    if request.method == 'POST':
-        form = IngredienteModelForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('ingrediente')
-    else:
-        form = IngredienteModelForm()
-    estado = 'crear'
-    return render(request, 'blog/ingrediente_nuevo.html', {'form': form, 'estado': estado})
+    IngredienteFormSet = formset_factory(IngredienteForm, extra=4)
 
-def ingrediente_crud(request, pk=None):
-    """
-    Función para crear o editar un autor.
-    Si pk es None -> crear
-    Si pk tiene valor -> editar
-    """
-    if pk:  
-        ingrediente = get_object_or_404(Ingrediente, pk=pk)
-        estado = 'editar'
-    else: 
-        ingrediente = None
-        estado = 'crear'
-    
+    if request.method == 'POST':
+        formset = IngredienteFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                datos = form.cleaned_data
+                if datos:
+                    Ingrediente.objects.create(
+                        nombre=datos['nombre'],
+                        refrigerado=datos['refrigerado'],
+                        categoria_id=datos['categoria'] if datos ['categoria'] else None
+                    )
+            return redirect('ingredientes')
+    else:
+        formset = IngredienteFormSet()
+
+    return render(request, 'app/ingrediente_nuevo.html', {'formset': formset , 'titulo': 'Crear ingrediente','boton': 'Crear'})
+def ingrediente_editar(request, pk):
+    ingrediente = get_object_or_404(Ingrediente, pk=pk)
+
     if request.method == 'POST':
         form = IngredienteModelForm(request.POST, instance=ingrediente)
         if form.is_valid():
@@ -65,9 +55,50 @@ def ingrediente_crud(request, pk=None):
             return redirect('ingredientes')
     else:
         form = IngredienteModelForm(instance=ingrediente)
-    categorias = CategoriaIngrediente.objects.all()
-    return render(request, 'app/ingrediente_crud.html', {
+
+    return render(request, 'app/ingrediente_editar.html', {
         'form': form,
-        'estado': estado,
-        'categorias': categorias
+        'titulo': 'Editar ingrediente',
+        'boton': 'Guardar cambios'
     })
+def ingrediente_eliminar(request, pk):
+    ingrediente = get_object_or_404(Ingrediente, pk=pk)
+
+    if request.method == 'POST':
+        ingrediente.delete()
+        return redirect('ingredientes')
+
+    return render(request, 'app/confirmar_eliminar.html', {
+        'ingrediente': ingrediente
+    })
+
+def relaciones(request):
+    recetas = Receta.objects.all()
+    ingredientes = Ingrediente.objects.all()
+
+    return render(request, 'app/relaciones.html', {'recetas':recetas, 'ingredientes':ingredientes})
+
+def recetas_lista(request):
+    recetas = Receta.objects.all()
+    return render(request, 'app/recetas_lista.html', {'recetas':recetas})
+
+def receta_detalle(request, pk):
+    receta = get_object_or_404(Receta, pk=pk)
+    ingredientes = Ingrediente.objects.all()
+    return render(request, 'app/receta_detalle.html', {'receta':receta, 'ingredientes':ingredientes})
+
+def receta_agregar_ingrediente(request, receta_pk, ingrediente_pk):
+    receta = get_object_or_404(Receta, pk=receta_pk)
+    ingrediente = get_object_or_404(Ingrediente, pk=ingrediente_pk)
+
+    receta.ingredientes.add(ingrediente)
+
+    return redirect('receta_detalle', pk=receta_pk)
+
+def receta_eliminar_ingrediente(request, receta_pk, ingrediente_pk):
+    receta = get_object_or_404(Receta, pk=receta_pk)
+    ingrediente = get_object_or_404(Ingrediente, pk=ingrediente_pk)
+
+    receta.ingredientes.remove(ingrediente)
+
+    return redirect('receta_detalle', pk=receta_pk)

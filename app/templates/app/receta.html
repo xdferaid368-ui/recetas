@@ -1,0 +1,31 @@
+{% extends "app/base.html" %}
+
+{% block contenido %}
+<h1>{{ receta.nombre }}</h1>
+<p>{{ receta.descripcion }}</p>
+
+<h2>Ingredientes de la receta</h2>
+<ul>
+    {% for ingrediente in receta.ingredientes.all %}
+        <li>{{ ingrediente.nombre }}</li>
+    {% empty %}
+        <li>No hay ingredientes aún.</li>
+    {% endfor %}
+</ul>
+
+<h2>Agregar ingredientes</h2>
+<ul>
+    {% for ingrediente in ingredientes %}
+        <li>
+            {{ ingrediente.nombre }}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="ingrediente_id" value="{{ ingrediente.id }}">
+                <button type="submit">+</button>
+                <button type='submit'>-</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

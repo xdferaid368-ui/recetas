@@ -1,0 +1,32 @@
+{% extends "app/base.html" %}
+{%block contenido%}
+<h1>Relaciones</h1>
+<h1> Recetas</h1>
+{%for receta in recetas%}
+<ul>
+    <h3>Nombre Receta:</h3>
+    <li>{{receta.nombre}}</li>
+    <h3>Descripcion:</h3>
+    <li>{{receta.descripcion}}</li>
+    <h3>Ingredientes:</h3>
+    {%for ingrediente in receta.ingredientes.all%}
+    <li>{{ingrediente.nombre}}
+    {%endfor%}
+</ul>
+{%endfor%}
+<h1>Ingredientes:</h1>
+{%for ingrediente in ingredientes%}
+<ul>
+    <li>{{ingrediente.nombre}}</li>
+    <h3>Recetas:</h3>
+    {%for receta in ingrediente.receta_set.all%}
+    <ul>
+    <li>
+        {{receta.nombre}}
+    </li>
+</ul>
+{%endfor%}
+</ul>
+
+{%endfor%}
+{%endblock%}

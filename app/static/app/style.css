@@ -1,0 +1,118 @@
+/* RESET BÁSICO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* CUERPO DE LA PÁGINA */
+body {
+    background-color: #fdf6f0;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* ENCABEZADOS */
+h1, h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 1.8em;
+    margin-top: 20px;
+}
+
+/* LISTAS */
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul li {
+    background-color: #ffe6cc;
+    margin: 5px 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+ul li:hover {
+    background-color: #ffcc99;
+}
+
+/* TABLAS */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f4a261;
+    color: white;
+}
+
+/* BOTONES */
+button, .btn {
+    background-color: #f4a261;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #e76f51;
+}
+
+/* FORMULARIOS */
+input[type="text"], input[type="number"], select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+
+/* CONTENEDORES */
+.container {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* ENLACES */
+a {
+    color: #2a9d8f;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
