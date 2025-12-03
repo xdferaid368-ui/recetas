@@ -1,0 +1,19 @@
+{% extends 'app/base.html' %}
+
+{% block contenido %}
+<h1>Listado de Recetas</h1>
+
+<ul>
+    {% for receta in recetas %}
+        <li>
+            <a href="{% url 'receta_detalles' receta.pk %}">{{ receta.nombre }}</a>
+        </li>
+    {% empty %}
+        <li>No hay recetas disponibles.</li>
+    {% endfor %}
+</ul>
+
+<div class="volver-centro">
+    <a href="{% url 'inicio' %}" class="btn-accion btn-volver">Volver</a>
+</div>
+{% endblock %}

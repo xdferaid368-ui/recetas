@@ -29,4 +29,10 @@
 </ul>
 
 {%endfor%}
+<h1>Añadir Ingrediente a Receta</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+</form>
 {%endblock%}

@@ -1,31 +1,46 @@
-{% extends "app/base.html" %}
+{% extends 'app/base.html' %}
 
 {% block contenido %}
-<h1>{{ receta.nombre }}</h1>
-<p>{{ receta.descripcion }}</p>
+<h1>Receta: {{ receta.nombre }}</h1>
 
-<h2>Ingredientes de la receta</h2>
-<ul>
-    {% for ingrediente in receta.ingredientes.all %}
-        <li>{{ ingrediente.nombre }}</li>
-    {% empty %}
-        <li>No hay ingredientes aún.</li>
-    {% endfor %}
-</ul>
+<div class="receta-bloques">
+    <div>
+        <h2>Descripción</h2>
+        <ul class="receta-lista">
+        {{ receta.descripcion }}
+        </ul>
+    </div>
+    <div>
+        <h2>Ingredientes actuales</h2>
+        <ul class="receta-lista">
+        {% for ingrediente in receta.ingredientes.all %}
+            <li>
+                <span>{{ ingrediente.nombre }}</span>
+                <a href="{% url 'receta_eliminar_ingrediente' receta.pk ingrediente.pk %}" class="btn-accion btn-add"> Borrar </a>
 
-<h2>Agregar ingredientes</h2>
-<ul>
-    {% for ingrediente in ingredientes %}
-        <li>
-            {{ ingrediente.nombre }}
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="ingrediente_id" value="{{ ingrediente.id }}">
-                <button type="submit">+</button>
-                <button type='submit'>-</button>
-            </form>
-        </li>
-    {% endfor %}
-</ul>
+            </li>
+        {% empty %}
+            <li>
+                <span>Esta receta todavía no tiene ingredientes añadidos.</span>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
 
+    <div>
+        <h2>Añadir ingredientes</h2>
+        <ul class="receta-lista">
+        {% for ingrediente in ingredientes %}
+            <li>
+                <span>{{ ingrediente.nombre }}</span>
+                <a href="{% url 'receta_agregar_ingrediente' receta.pk ingrediente.pk %}" class="btn-accion btn-add">Añadir</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="volver-centro">
+  <a href="{% url 'inicio' %}" class="btn-accion btn-volver">Volver</a>
+</div>
 {% endblock %}

@@ -23,7 +23,7 @@ class Refrigerado(models.Model):
 class Receta(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    ingredientes = models.ManyToManyField('Ingrediente')
+    ingredientes = models.ManyToManyField('Ingrediente', through='IngredienteReceta')
     def __str__(self):
         return self.nombre
 class Ingrediente(models.Model):
@@ -38,3 +38,15 @@ class Ingrediente(models.Model):
     def clean(self):
         if self.fecha_caducidad and self.fecha_caducidad < date.today():
             raise ValidationError("La fecha no puede ser anterior a hoy")
+
+class IngredienteReceta(models.Model):
+    class MedidasChoices(models.TextChoices):
+        LITROS = 'L', 'Litros'
+        KILOS = 'KG', 'Kilogramos'
+        GRAMOS = 'g', 'Gramos'
+        UNIDADES = 'UD','Unidades'
+        MILILITROS = 'ml','Mililitros'
+    receta = models.ForeignKey(Receta, on_delete=models.CASCADE)
+    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
+    cantidad = models.FloatField()
+    medida = models.CharField(max_length=2, choices= MedidasChoices.choices)
