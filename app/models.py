@@ -50,3 +50,5 @@ class IngredienteReceta(models.Model):
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     cantidad = models.FloatField()
     medida = models.CharField(max_length=2, choices= MedidasChoices.choices)
+    '''''class Meta: 
+        unique_together = ('ingrediente', 'receta') '''''''''
