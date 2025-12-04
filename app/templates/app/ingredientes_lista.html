@@ -40,7 +40,7 @@
     <tbody>
         {% for ingrediente in ingredientes %}
             <tr>
-                <td>{{ ingrediente.nombre }}</td>
+                <td> <a href="{% url 'IngredienteDetalle' ingrediente.pk %}">{{ ingrediente.nombre }}</a></td>
                 <td>{{ ingrediente.categoria.nombre|default:"-" }}</td>
                 <td>{{ ingrediente.refrigerado|yesno:"Sí,No" }}</td>
                 <td>{{ ingrediente.fecha_caducidad|default:"-" }}</td>

@@ -7,6 +7,7 @@ def validate_nombre(value):
         raise ValidationError("No puedes añadir un televisor tío")
     
 
+
 class CategoriaIngrediente(models.Model):
     nombre = models.CharField(max_length=100)
     

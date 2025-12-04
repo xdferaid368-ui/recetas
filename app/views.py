@@ -1,11 +1,39 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
 from .models import *
 from .forms import FiltroIngredientesForm, IngredienteModelForm, IngredienteForm, IngredienteRecetaModelForm
 from django.forms import formset_factory
-
+from django.views.generic import TemplateView ,ListView, DetailView, CreateView, UpdateView, DeleteView
+class Inicio(TemplateView):
+    template_name = 'app/inicio.html'
+    
 def inicio(request):
     return render(request, 'app/inicio.html')
+class IngredienteCrear(CreateView):
+    model = Ingrediente
+    form_class = IngredienteModelForm
+    template_name = "app/ingrediente_nuevo.html"
+    success_url = reverse_lazy('ingredientes')
+class IngredienteEditar(UpdateView):
+    model = Ingrediente
+    form_class = IngredienteModelForm
+    template_name = 'app/ingrediente_editar.html'
+    success_url = reverse_lazy('ingredientes')
 
+class IngredientesListaView(ListView):
+    model = Ingrediente
+    form_class = IngredienteModelForm
+    template_name = 'app/ingredientes_lista.html'
+    context_object_name = 'ingredientes'
+class IngredientesDetalleView(DetailView):
+    model = Ingrediente
+    template_name = 'app/ingrediente_detalle.html'
+    context_object_name = 'ingrediente'
+
+class IngredienteEliminar(DeleteView):
+    model = Ingrediente
+    template_name = 'app/confirmar_eliminar.html'
+    success_url = reverse_lazy('ingredientes')
 
 def ingredientes_lista(request):
     categorias = CategoriaIngrediente.objects.all()

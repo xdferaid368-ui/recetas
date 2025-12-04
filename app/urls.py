@@ -2,14 +2,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.inicio, name='inicio'),
+      path("", views.Inicio.as_view(), name="Inicio"),
 
     # Ingredientes
-    path('ingredientes', views.ingredientes_lista, name='ingredientes'),
-    path('ingrediente/nuevo', views.ingrediente_nuevo, name='ingrediente_nuevo'),
-    path('ingrediente/<int:pk>/editar', views.ingrediente_editar, name='ingrediente_editar'),
-    path('ingrediente/<int:pk>/eliminar', views.ingrediente_eliminar, name='ingrediente_eliminar'),
-
+    path('ingredientes', views.IngredientesListaView.as_view(), name='ingredientes'),
+    path('ingrediente/nuevo', views.IngredienteCrear.as_view(), name='ingrediente_nuevo'),
+    path('ingrediente/<int:pk>/editar/', views.IngredienteEditar.as_view(), name='ingrediente_editar'),
+    path('ingrediente/<int:pk>/eliminar', views.IngredienteEliminar.as_view(), name='ingrediente_eliminar'),
+    path('ingrediente/<int:pk>', views.IngredientesDetalleView.as_view(), name='IngredienteDetalle')
+ ,
     # Relaciones
     path('relaciones', views.relaciones, name='relaciones'),
 
