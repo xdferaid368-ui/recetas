@@ -25,6 +25,7 @@ class IngredientesListaView(ListView):
     form_class = IngredienteModelForm
     template_name = 'app/ingredientes_lista.html'
     context_object_name = 'ingredientes'
+    
 class IngredientesDetalleView(DetailView):
     model = Ingrediente
     template_name = 'app/ingrediente_detalle.html'
