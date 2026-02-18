@@ -58,7 +58,39 @@
     </tbody>
 </table>
 
-<br>
+{% if is_paginated %}
+  {% with request.GET.urlencode as query_params %}
+    {% if query_params %}
+      {% with query_params|cut:"page=" as query_params_without_page %}
+        <div class="paginacion">
+          {% if page_obj.has_previous %}
+            <a href="?page=1&{{ query_params_without_page }}">Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}&{{ query_params_without_page }}">Anterior</a>
+          {% endif %}
 
+          Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&{{ query_params_without_page }}">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&{{ query_params_without_page }}">Última</a>
+          {% endif %}
+        </div>
+      {% endwith %}
+    {% else %}
+      <div class="paginacion">
+        {% if page_obj.has_previous %}
+          <a href="?page=1">Primera</a>
+          <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+        {% endif %}
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endif %}
+<br>
 <a href="{% url 'ingrediente_nuevo' %}" class="btn">Nuevo ingrediente</a>
 {% endblock %}

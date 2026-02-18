@@ -4,6 +4,8 @@ from .models import *
 from .forms import FiltroIngredientesForm, IngredienteModelForm, IngredienteForm, IngredienteRecetaModelForm
 from django.forms import formset_factory
 from django.views.generic import TemplateView ,ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework import viewsets
+from .serializers import RecetaSerializer, IngredienteSerializer
 class Inicio(TemplateView):
     template_name = 'app/inicio.html'
     
@@ -14,6 +16,14 @@ class IngredienteCrear(CreateView):
     form_class = IngredienteModelForm
     template_name = "app/ingrediente_nuevo.html"
     success_url = reverse_lazy('ingredientes')
+    def form_valid0(self, form):
+        response = super().form_valid(form)
+        return response
+
+    def form_invalido(self, form):
+        response = super().form_invalid(form)
+        return response
+    
 class IngredienteEditar(UpdateView):
     model = Ingrediente
     form_class = IngredienteModelForm
@@ -22,10 +32,28 @@ class IngredienteEditar(UpdateView):
 
 class IngredientesListaView(ListView):
     model = Ingrediente
-    form_class = IngredienteModelForm
     template_name = 'app/ingredientes_lista.html'
     context_object_name = 'ingredientes'
-    
+    paginate_by = 4
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        categoria = self.request.GET.get('categoria')
+        refrigerado = self.request.GET.get('refrigerado')
+
+        if categoria:
+            queryset = queryset.filter(categoria_id=categoria)
+
+        if refrigerado:
+            queryset = queryset.filter(refrigerado=True)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = CategoriaIngrediente.objects.all()
+        context['refrigerado_filtro'] = self.request.GET.get('refrigerado')
+        return context
 class IngredientesDetalleView(DetailView):
     model = Ingrediente
     template_name = 'app/ingrediente_detalle.html'
@@ -35,46 +63,6 @@ class IngredienteEliminar(DeleteView):
     model = Ingrediente
     template_name = 'app/confirmar_eliminar.html'
     success_url = reverse_lazy('ingredientes')
-
-def ingredientes_lista(request):
-    categorias = CategoriaIngrediente.objects.all()
-    ingredientes = Ingrediente.objects.all()
-
-    categoria = request.GET.get('categoria')
-    refrigerado = request.GET.get('refrigerado')
-
-    if categoria:
-        ingredientes = ingredientes.filter(categoria_id=categoria)
-
-    if refrigerado:
-        ingredientes = ingredientes.filter(refrigerado=True)
-
-    return render(request, 'app/ingredientes_list.html', {
-        'ingredientes': ingredientes,
-        'categorias': categorias,
-        'refrigerado_filtro': refrigerado,
-        'formulario_filtro': FiltroIngredientesForm(),
-    })
-
-def ingrediente_nuevo(request):
-    IngredienteFormSet = formset_factory(IngredienteForm, extra=4)
-
-    if request.method == 'POST':
-        formset = IngredienteFormSet(request.POST)
-        if formset.is_valid():
-            for form in formset:
-                datos = form.cleaned_data
-                if datos:
-                    Ingrediente.objects.create(
-                        nombre=datos['nombre'],
-                        refrigerado=datos['refrigerado'],
-                        categoria_id=datos['categoria'] if datos['categoria'] else None
-                    )
-            return redirect('ingredientes')
-    else:
-        formset = IngredienteFormSet()
-
-    return render(request, 'app/ingrediente_nuevo.html', {'formset': formset , 'titulo': 'Crear ingrediente','boton': 'Crear'})
 
 def ingrediente_editar(request, pk):
     ingrediente = get_object_or_404(Ingrediente, pk=pk)
@@ -136,3 +124,10 @@ def receta_eliminar_ingrediente(request, receta_pk, ingrediente_pk):
     ingrediente = get_object_or_404(Ingrediente, pk=ingrediente_pk)
     receta.ingredientes.remove(ingrediente)
     return redirect('receta_detalles', pk=receta_pk)
+
+class RecetaViewSet(viewsets.ModelViewSet):
+    queryset = Receta.objects.all()
+    serializer_class = RecetaSerializer
+class IngredienteViewSet(viewsets.ModelViewSet):
+    queryset = Ingrediente.objects.all()
+    serializer_class = IngredienteSerializer

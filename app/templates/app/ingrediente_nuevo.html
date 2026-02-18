@@ -8,6 +8,13 @@
     {{ form.as_p }}
     <button type="submit">Crear</button>
 </form>
+{% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
 <a href="{% url 'ingredientes' %}">Volver</a>
 {% endblock %}

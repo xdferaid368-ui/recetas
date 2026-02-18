@@ -1,8 +1,17 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework.routers import DefaultRouter
+from .views import RecetaViewSet, IngredienteViewSet
+
+router = DefaultRouter()
+router.register(r'recetas', views.RecetaViewSet)
+router.register(r'ingredientes', views.IngredienteViewSet)
 
 urlpatterns = [
-      path("", views.Inicio.as_view(), name="Inicio"),
+     path('api/', include(router.urls)),
+     path('api-auth/', include('rest_framework.urls')),
+     
+     path("", views.Inicio.as_view(), name="Inicio"),
 
     # Ingredientes
     path('ingredientes', views.IngredientesListaView.as_view(), name='ingredientes'),
@@ -21,4 +30,5 @@ urlpatterns = [
          views.receta_agregar_ingrediente, name='receta_agregar_ingrediente'),
     path('receta/<int:receta_pk>/eliminar_ingrediente/<int:ingrediente_pk>',
          views.receta_eliminar_ingrediente, name='receta_eliminar_ingrediente'),
+
 ]
